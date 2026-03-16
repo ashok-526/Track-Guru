@@ -1,0 +1,17 @@
+{
+  "name": "Himalaya College of Engineering",
+  "short_name": "HCE",
+  "description": "Minimal campus portal for attendance, chat, uploads and academic records.",
+  "theme_color": "#0A2540",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

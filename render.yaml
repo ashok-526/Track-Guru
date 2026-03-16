@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: embark-live-monitor-ai
+    runtime: node
+    plan: pro
+    buildCommand: npm ci
+    startCommand: node server/live-monitor-ai-server.mjs
+    healthCheckPath: /api/live-monitor/health
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_VISION_MODEL
+        value: gpt-4.1-mini

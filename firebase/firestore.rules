@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function hasProfile() {
+      return signedIn() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function isTeacher() {
+      return hasProfile() && userDoc().data.role == "teacher";
+    }
+
+    function ownsProfile(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function matchesCollegeId(collegeId) {
+      return hasProfile() && userDoc().data.collegeId == collegeId;
+    }
+
+    match /users/{uid} {
+      allow create: if ownsProfile(uid);
+      allow read: if ownsProfile(uid) || isTeacher();
+      allow update: if ownsProfile(uid) || isTeacher();
+    }
+
+    match /notices/{noticeId} {
+      allow read: if signedIn();
+      allow write: if isTeacher();
+    }
+
+    match /calendarEvents/{eventId} {
+      allow read: if signedIn();
+      allow write: if isTeacher();
+    }
+
+    match /uploads/{uploadId} {
+      allow read: if signedIn();
+      allow create, update, delete: if isTeacher();
+    }
+
+    match /attendanceSummary/{recordId} {
+      allow read: if signedIn();
+      allow write: if isTeacher();
+    }
+
+    match /attendanceSessions/{collegeId} {
+      allow read: if isTeacher() || matchesCollegeId(collegeId);
+      allow create, update: if isTeacher() || matchesCollegeId(collegeId);
+      allow delete: if false;
+    }
+
+    match /marksheets/{marksheetId} {
+      allow read: if isTeacher() || matchesCollegeId(resource.data.collegeId);
+      allow write: if isTeacher();
+    }
+  }
+}

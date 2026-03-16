@@ -1,0 +1,41 @@
+{
+  "rules": {
+    ".read": "auth != null",
+    "userProfiles": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+    "channels": {
+      "class-2074-it": {
+        "messages": {
+          ".read": "auth != null",
+          ".write": "auth != null"
+        }
+      },
+      "all-teachers": {
+        "messages": {
+          ".read": "auth != null",
+          ".write": "auth != null && root.child('userProfiles').child(auth.uid).child('role').val() === 'teacher'"
+        }
+      }
+    },
+    "directMembers": {
+      "$thread": {
+        "$uid": {
+          ".read": "auth != null && auth.uid === $uid",
+          ".write": "auth != null"
+        }
+      }
+    },
+    "direct": {
+      "$thread": {
+        "messages": {
+          ".read": "auth != null && root.child('directMembers').child($thread).child(auth.uid).val() === true",
+          ".write": "auth != null && root.child('directMembers').child($thread).child(auth.uid).val() === true"
+        }
+      }
+    }
+  }
+}
