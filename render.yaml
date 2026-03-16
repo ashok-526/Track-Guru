@@ -2,7 +2,7 @@ services:
   - type: web
     name: embark-live-monitor-ai
     runtime: node
-    plan: pro
+    plan: starter
     buildCommand: npm ci
     startCommand: node server/live-monitor-ai-server.mjs
     healthCheckPath: /api/live-monitor/health
