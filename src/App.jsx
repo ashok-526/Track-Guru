@@ -4,9 +4,6 @@ import { AppShell } from "./components/layout/AppShell";
 import { Spinner } from "./components/ui/Spinner";
 import { useAuth } from "./context/AuthContext";
 
-const LandingPage = lazy(() =>
-  import("./pages/LandingPage").then((module) => ({ default: module.LandingPage }))
-);
 const DashboardPage = lazy(() =>
   import("./pages/DashboardPage").then((module) => ({ default: module.DashboardPage }))
 );
@@ -37,15 +34,13 @@ function ProtectedRoute() {
   }
 
   if (!user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <AppShell />;
 }
 
 export default function App() {
-  const { user } = useAuth();
-
   return (
     <Suspense
       fallback={
@@ -55,10 +50,7 @@ export default function App() {
       }
     >
       <Routes>
-        <Route
-          path="/"
-          element={user ? <Navigate to="/dashboard" replace /> : <LandingPage />}
-        />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/monitor" element={<SessionMonitorPage />} />
@@ -66,10 +58,7 @@ export default function App() {
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
-        <Route
-          path="*"
-          element={<Navigate to={user ? "/dashboard" : "/"} replace />}
-        />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Suspense>
   );

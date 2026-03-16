@@ -2,7 +2,6 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { Button } from "../ui/Button";
 
 const navigation = [
   { label: "Dashboard", href: "/dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1" },
@@ -24,7 +23,7 @@ function initials(name) {
 }
 
 export function AppShell() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const currentPage = navigation.find((n) => n.href === location.pathname)?.label ?? "Dashboard";
@@ -94,7 +93,7 @@ export function AppShell() {
       {/* Main */}
       <div className="flex min-h-screen flex-1 flex-col overflow-hidden">
         <header className="sticky top-0 z-20 border-b border-surface-200/60 bg-white/80 px-4 py-3.5 backdrop-blur-lg sm:px-6">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -108,9 +107,6 @@ export function AppShell() {
               <h1 className="text-base font-bold text-surface-900 sm:text-lg">{currentPage}</h1>
             </div>
 
-            <Button variant="ghost" onClick={logout} className="text-sm">
-              Logout
-            </Button>
           </div>
         </header>
 

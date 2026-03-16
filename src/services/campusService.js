@@ -173,34 +173,11 @@ function buildOverview(profile, state, visibleSessions, allTeachers, todaySchedu
   };
 }
 
-export async function loginWithCollegeId({ collegeId, staffId, password }) {
-  const state = readDemoState();
-  const identifier = (staffId ?? collegeId ?? "").trim().toUpperCase();
-  const user = state.users.find(
-    (item) =>
-      item.staffId.toUpperCase() === identifier &&
-      item.password === password &&
-      item.role === "admin"
-  );
-
-  if (!user) {
-    throw new Error("Invalid school admin staff ID or password.");
-  }
-
-  setSessionUid(user.uid);
-  return clone(user);
-}
-
-export async function logoutUser() {
-  clearSessionUid();
-}
-
 export function subscribeToAuthState(callback) {
   const notify = () => {
     const state = readDemoState();
-    const uid = getSessionUid();
-    const profile = state.users.find((user) => user.uid === uid) ?? null;
-    callback(profile ? clone(profile) : null);
+    const admin = state.users.find((u) => u.role === "admin") ?? null;
+    callback(admin ? clone(admin) : null);
   };
 
   notify();
