@@ -1,6 +1,14 @@
-# Track Guru — Classroom Activity Analytics
+# Track Guru
 
-A modern admin dashboard for tracking teacher sessions, verifying attendance with face recognition, and reviewing classroom activity reports.
+**Classroom activity analytics with face-verified attendance.** An admin dashboard for tracking teacher sessions, verifying who actually started them, and reviewing what happened in the room.
+
+[![Live demo](https://img.shields.io/badge/demo-trackguru.vercel.app-006CC4?style=flat-square)](https://trackguru.vercel.app/dashboard)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square&logo=react&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=flat-square&logo=vite&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-Auth%20%C2%B7%20Firestore-FFCA28?style=flat-square&logo=firebase&logoColor=black)
+![face-api.js](https://img.shields.io/badge/face--api.js-computer%20vision-0A7E8C?style=flat-square)
+
+![Track Guru dashboard](Screenshot%202026-03-16%20at%2009.26.30.png)
 
 ## Quick Start
 
@@ -17,15 +25,19 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 |--------------|----------------|---------------|
 | School Admin | `NGA-ADM-001`  | `password123` |
 
-If Firebase is not configured, the app runs in seeded demo mode with sample teachers and schedules.
+These only work in seeded demo mode. If Firebase is not configured, the app boots with sample teachers and schedules so it can be evaluated without provisioning anything.
 
 ## Features
 
 - **Dashboard** — Overview of today's schedule, verified session starts, teacher list, and recent session history.
-- **Live Monitor** — Start face-verified sessions, watch the live camera feed with real-time face tracking (green bounding box), continuous screenshot capture, and a session timer. End session triggers AI-powered summary generation.
-- **Teacher Registry** — Register teachers, manage profiles, and enroll face data with live face detection and duplicate prevention. The scanner shows a green tracking box for new faces and a red box with the enrolled name if the face already exists.
-- **Reports** — Browse session logs per teacher with time filters, view activity timelines, AI summaries with expand/collapse, and export clean printable reports.
+- **Live Monitor** — Start face-verified sessions, watch the live camera feed with real-time face tracking (green bounding box), continuous screenshot capture, and a session timer. Ending a session triggers AI summary generation.
+- **Teacher Registry** — Register teachers, manage profiles, and enroll face data with live detection and duplicate prevention. The scanner draws a green box for a new face, and a red box with the existing name if that person is already enrolled.
+- **Reports** — Browse session logs per teacher with time filters, view activity timelines, expand or collapse AI summaries, and export printable reports.
 - **Profile** — View and update admin contact details.
+
+## Privacy
+
+Face data is stored as **descriptors only**. Embeddings are persisted as Float32Arrays in Firestore and no face image is ever written to storage. Screenshot previews captured during live monitoring are held in component state and sent for analysis when the session ends, not retained.
 
 ## Tech Stack
 
@@ -49,8 +61,8 @@ src/
 │   ├── ui/                      # Button, Card, Modal, Spinner
 │   └── vision/                  # TeacherVisionSummary
 ├── context/
-│   ├── AuthContext.jsx           # Auth state
-│   └── AppDataContext.jsx        # App data + API actions
+│   ├── AuthContext.jsx          # Auth state
+│   └── AppDataContext.jsx       # App data + API actions
 ├── hooks/
 │   └── useFaceRecognition.js    # Camera + face-api hook
 ├── lib/
@@ -70,12 +82,12 @@ src/
 
 ## Scripts
 
-| Command          | Description                  |
-|------------------|------------------------------|
-| `npm run dev`    | Start Vite dev server        |
-| `npm run build`  | Production build to `dist/`  |
-| `npm run preview`| Preview production build     |
-| `npm run ai-server` | Start AI analysis server |
+| Command             | Description                 |
+|---------------------|-----------------------------|
+| `npm run dev`       | Start Vite dev server       |
+| `npm run build`     | Production build to `dist/` |
+| `npm run preview`   | Preview production build    |
+| `npm run ai-server` | Start AI analysis server    |
 
 ## Firebase Setup
 
@@ -83,8 +95,6 @@ src/
 2. Deploy Firestore, Storage, and Realtime Database rules from the `firebase/` directory.
 3. Without Firebase config, the app defaults to seeded demo mode.
 
-## Notes
+## Known limitations
 
-- Face embeddings are stored as Float32Arrays in Firestore. No face images are persisted — only descriptors.
-- Screenshot previews during live monitoring are held in component state and sent for AI analysis on session end.
-- The `src/services/aiService.js` contains the OpenAI integration placeholder. For production, move the API call to a backend.
+`src/services/aiService.js` holds an OpenAI integration placeholder that calls from the client. For production this belongs behind a backend so the key is never shipped to the browser.
